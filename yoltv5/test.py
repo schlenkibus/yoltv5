@@ -17,6 +17,9 @@ import time
 import sys
 import os
 
+from PIL import Image
+Image.MAX_IMAGE_PIXELS = None
+
 ######################################
 class dotdict(dict):
     """dot.notation access to dictionary attributes"""
@@ -50,8 +53,6 @@ sys.path.append(yolt_src_path)
 import prep_train
 import tile_ims_labels
 import post_process
-import eval
-import eval_errors
 
 # check if output already exists
 results_dir = os.path.join(yolt_src_path, 'yolov5/runs/detect', config.outname_infer)

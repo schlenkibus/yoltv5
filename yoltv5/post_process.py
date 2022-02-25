@@ -1549,8 +1549,8 @@ def execute(pred_dir='/root/yoltv5/results/',
             gdf_geo.to_file(outfile_geojson_geo_orig_crs, driver='GeoJSON')
             # convert geojson to 'EPSG:3857'
             # https://geopandas.org/en/stable/docs/user_guide/projections.html
-            gdf_geo_3857 = gdf_geo.to_crs('EPSG:3857')
-            gdf_geo_3857.to_file(outfile_geojson_geo_3857, driver='GeoJSON')
+            # gdf_geo_3857 = gdf_geo.to_crs('EPSG:3857')
+            # gdf_geo_3857.to_file(outfile_geojson_geo_3857, driver='GeoJSON')
 
         # # wmp too... poop
         # use convert_poly_coords - need affine trannsorm to: outProj_str='EPSG:3857'
