@@ -11,6 +11,9 @@
 ____
 ## Running YOLTv5
 
+docker build . -t yoltv5
+nvidia-docker run --ipc=host --gpus=all -p 5000:5000 $hostOutDir:/out -it yoltv5
+
 ___
 
 ### 0. Installation (Preliminary)
