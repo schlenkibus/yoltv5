@@ -6,22 +6,15 @@
 # yoltv5 input file variables
 yoltv5_path: /opt/src/yoltv5
 # object name variables (object names should be in order)
-name_file_name: 'yoltv5_8class.name'
-object_names:
-	- 'Small_Aircraft'
-	- 'Large_Aircraft'
-	- 'Car'
-	- 'Bus'
-	- 'Truck'
-	- 'Boat'
-	- 'Medium_Ship'
-	- 'Large_Ship'
+name_file_name: 'yoltv5_1class.name'
+object_names: 	
+	- 'flower'
 ###################
 # image slicing variables
 data_root: /data/test_imagery
 test_im_dir: /data/test_imagery/input
-sliceHeight: 544
-sliceWidth: 544
+sliceHeight: 640
+sliceWidth: 640
 slice_overlap: 0.1
 im_ext: '.tif'
 out_ext: '.jpg'
@@ -38,8 +31,8 @@ outpath_test_txt: /data/test_imagery/test.txt
 
 ###################
 # inference variables
-outname_infer: 'yoltv5_8class_'
-weights_file: /opt/yoltv5/yolv5/yolov5/runs/train/exp/weights/last.pt
+outname_infer: 'yoltv5_1class_'
+weights_file: /out/BEST-YOLT.pt
 
 ###################
 # post-process variables
