@@ -1,0 +1,1 @@
+docker build -t yoltv5-rtx30xx .

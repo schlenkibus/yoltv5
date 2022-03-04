@@ -12,7 +12,11 @@ ____
 ## Running YOLTv5
 
 docker build . -t yoltv5
-nvidia-docker run --ipc=host --gpus=all -p 5000:5000 $hostOutDir:/out -it yoltv5
+nvidia-docker run --ipc=host --gpus=all -p 5000:5000 $hostOutDir:/out $hostDataDir:/data -it yoltv5
+
+idea is to run the docker container with and persistent shared volume called /data and /out
+data is meant as a base layer of models and test-data
+out is an archive of artefacts the training and interference produced
 
 ___
 

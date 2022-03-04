@@ -11,6 +11,6 @@ RUN pip install torchsummary utm numba jinja2==2.10 rasterio
 
 COPY yoltv5 /yoltv5
 COPY configs /configs
-#COPY data /data
+COPY use-cases /use-cases
 
 RUN pip install -r /yoltv5/yolov5/requirements.txt
