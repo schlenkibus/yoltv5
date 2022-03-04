@@ -1,3 +1,3 @@
 # test
 JSON=$1
-time python test.py $JSON
+python /yoltv5/test.py $JSON

@@ -55,7 +55,7 @@ import tile_ims_labels
 import post_process
 
 # check if output already exists
-results_dir = os.path.join(yolt_src_path, 'yolov5/runs/detect', config.outname_infer)
+results_dir = config.yolov5_outdirectory
 if os.path.exists(results_dir):
     raise ValueError('Breaking, since output directory already exists {}'.format(results_dir))
 
@@ -100,7 +100,7 @@ if config.sliceWidth > 0:
             im_path = os.path.join(config.test_im_dir, im_name)
             im_tmp = skimage.io.imread(im_path)
             h, w = im_tmp.shape[:2]
-            print(i, "/", len(im_list), im_name, "h, w =", h, w)
+            #print(i, "/", len(im_list), im_name, "h, w =", h, w)
 
             # tile data
             out_name = im_name.split('.')[0]
@@ -152,10 +152,10 @@ with open(config.outpath_test_txt,'r') as f:
 
 script_path = os.path.join(config.yoltv5_path, 'yoltv5/yolov5/detect.py')
 yolt_cmd = 'python {} --weights {} --source {} --img {} --conf {} ' \
-            '--name {} --nosave --save-txt --save-conf'.format(\
+            '--name {} --project {} --nosave --save-txt --save-conf'.format(\
             script_path, config.weights_file, config.outdir_slice_ims,
             config.train_im_size, min(config.detection_threshes), 
-            config.outname_infer)
+            config.outname_infer, config.yolov5_outdirectory)
 print("\nyolt_cmd:", yolt_cmd)
 os.system(yolt_cmd)
 
@@ -163,9 +163,9 @@ os.system(yolt_cmd)
 ######################################
 # 4. Post process (CPU)
 ######################################
-pred_dir = os.path.join(results_dir, 'labels')
+pred_dir = os.path.join(results_dir, config.outname_infer, 'labels')
 # pred_dir = os.path.join(config.yoltv5_path, 'yoltv5', 'yolov5/runs/detect', config.outname_infer)
-out_dir_root = os.path.join(config.yoltv5_path, 'results', config.outname_infer)
+out_dir_root = os.path.join(config.yolov5_outdirectory, 'results', config.outname_infer)
 os.makedirs(out_dir_root, exist_ok=True)
 print("post-proccessing:", config.outname_infer)
 for detection_thresh in config.detection_threshes:

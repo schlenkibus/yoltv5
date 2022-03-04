@@ -94,7 +94,7 @@ def plot_detections(im, boxes, gt_bounds=[],
                test_box_rescale_frac=1,
                label_txt=None,
                draw_rect=True, draw_circle=False,
-               verbose=False, super_verbose=False):
+               verbose=True, super_verbose=False):
     """
     Plot boxes in image.
     Arguments

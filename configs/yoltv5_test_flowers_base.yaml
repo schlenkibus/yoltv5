@@ -14,15 +14,15 @@ object_names:
 # image slicing variables
 data_root: /data/test_imagery
 test_im_dir: /data/test_imagery/input
-sliceHeight: 544
-sliceWidth: 544
+sliceHeight: 640
+sliceWidth: 640
 train_im_size: 640
 slice_overlap: 0.1
 im_ext: '.jpg'
 out_ext: '.jpg'
 # shouldn't need changed below here
 skip_highly_overlapped_tiles: False
-slice_verbose: True
+slice_verbose: False
 n_threads_slice: 8
 slice_sep: '__'
 slice_overwrite: True
@@ -45,7 +45,7 @@ n_plots: 4
 allow_nested_detections: True
 truth_file: '' # os.path.join(data_root, 'test', 'geojsons_geo', 'truth.geojson')
 # seldom changed below here
-extract_chips: False
+extract_chips: True
 chip_rescale_frac: 1.1
 chip_ext: '.jpg'
 edge_buffer_test: 1

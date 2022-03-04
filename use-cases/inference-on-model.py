@@ -4,8 +4,11 @@
 
 import shutil
 import sys, getopt, yaml
-
+from time import time
 import os
+import subprocess
+from distutils.dir_util import copy_tree
+
 
 def touch(fname):
     try:
@@ -21,7 +24,7 @@ def main(argv):
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:",["ifile=","ofile="])
+        opts, args = getopt.getopt(argv,"hi:o:m:y:",["input=","output=","model=","baseyaml="])
     except getopt.GetoptError:
         print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path>")
         sys.exit(2)
@@ -44,12 +47,18 @@ def main(argv):
     print(f"Baseyaml file is {base_yaml}")
 
 
+    timestamp = str(int(time()))
     data_root = outputdir
-    test_img_dir = f"{outputdir}/input"
-    outdir_slice_root = f"{outputdir}/yoltv5"
-    outdir_slice_ims = f"{outputdir}/images_slice"
-    outdir_slice_txt = f"{outputdir}/txt"
-    outpath_test_txt = f"{outputdir}/test.txt"
+    test_run_dir = f"{outputdir}/{timestamp}"
+    test_img_dir = f"{test_run_dir}/input"
+    outdir_slice_root = f"{test_run_dir}/yoltv5"
+    outdir_slice_ims = f"{test_run_dir}/images_slice"
+    outdir_slice_txt = f"{test_run_dir}/txt"
+    outpath_test_txt = f"{test_run_dir}/test.txt"
+    inference_yaml = f"{test_run_dir}/inference.yaml"
+    pred_out_dir = f"{test_run_dir}/prediction"
+    yolov5_outdirectory = f"{test_run_dir}/yolov5-detection"
+    outname_infer = timestamp
 
     #validate files exist
     if not os.path.exists(base_yaml):
@@ -60,19 +69,26 @@ def main(argv):
         print(f"Inputfile: {inputfile} does not exists")
         sys.exit(3)
 
+    if os.path.exists(outdir_slice_ims):
+        print(f"Slice_directory: {outdir_slice_ims} exists")
+        sys.exit(3)
+
+    if os.path.exists(outdir_slice_txt):
+        print(f"Txt_directory: {outdir_slice_txt} exists")
+        sys.exit(3)
+
+    if os.path.exists(outpath_test_txt):
+        print(f"Txt with slices: {outpath_test_txt} exists")
+        sys.exit(3)
+
     #prepare output directory
-    os.mkdir(outputdir, exists_okay=True)
-    os.mkdir(test_img_dir, exists_okay=True)
-    os.mkdir(outdir_slice_root, exists_okay=True)
-    os.mkdir(outdir_slice_ims, exists_okay=True)
-    os.mkdir(outdir_slice_txt, exists_okay=True)
-    
-    #touch files needed -> test.txt
-    touch(outpath_test_txt)
+    os.makedirs(outputdir, exist_ok=True)
+    os.makedirs(test_img_dir, exist_ok=True)
+    os.makedirs(outdir_slice_root, exist_ok=True)
+    os.makedirs(pred_out_dir, exist_ok=True)
 
     #copy input file to slice input
     shutil.copy2(inputfile, test_img_dir)
-
 
     #read base yaml
     try:
@@ -85,17 +101,25 @@ def main(argv):
             data['outdir_slice_ims'] = outdir_slice_ims
             data['outdir_slice_txt'] = outdir_slice_txt
             data['outpath_test_txt'] = outpath_test_txt
+            data['weights_file'] = modelfile
+            data['outname_infer'] = outname_infer
+            data['yolov5_outdirectory'] = yolov5_outdirectory
 
-            with open(f"{outputdir}/inference.yaml", 'w') as file:
+            with open(inference_yaml, 'w') as out_file:
                 #save yaml to output dir
-                outputs = yaml.dump(data, file)
-                print(outputs)
+                outputs = yaml.dump(data, out_file)
+            print(f"Saved config yaml to {inference_yaml}.")
 
     except yaml.YAMLError as exception:
-        print(exception)
+        print("96" + exception)
         sys.exit(4)
 
+    print("Running inference!")
     #continue to start the approrpiate script from yoltv5 with the generated yaml file
+    app = subprocess.run(["python", "/yoltv5/test.py", inference_yaml], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    print("out:" + str(app.stdout))
+    print("err:" + str(app.stderr))
+    print("Done running inference!")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
