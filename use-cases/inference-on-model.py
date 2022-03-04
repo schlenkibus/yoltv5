@@ -50,7 +50,7 @@ def main(argv):
     timestamp = str(int(time()))
     data_root = outputdir
     test_run_dir = f"{outputdir}/{timestamp}"
-    test_img_dir = f"{test_run_dir}/input"
+    test_im_dir = f"{test_run_dir}/input"
     outdir_slice_root = f"{test_run_dir}/yoltv5"
     outdir_slice_ims = f"{test_run_dir}/images_slice"
     outdir_slice_txt = f"{test_run_dir}/txt"
@@ -83,12 +83,12 @@ def main(argv):
 
     #prepare output directory
     os.makedirs(outputdir, exist_ok=True)
-    os.makedirs(test_img_dir, exist_ok=True)
+    os.makedirs(test_im_dir, exist_ok=True)
     os.makedirs(outdir_slice_root, exist_ok=True)
     os.makedirs(pred_out_dir, exist_ok=True)
 
     #copy input file to slice input
-    shutil.copy2(inputfile, test_img_dir)
+    shutil.copy2(inputfile, test_im_dir)
 
     #read base yaml
     try:
@@ -96,7 +96,7 @@ def main(argv):
             data = yaml.safe_load(base_file)
             #replace arguments of interest
             data['data_root'] = data_root
-            data['test_img_dir'] = test_img_dir
+            data['test_im_dir'] = test_im_dir
             data['outdir_slice_root'] = outdir_slice_root
             data['outdir_slice_ims'] = outdir_slice_ims
             data['outdir_slice_txt'] = outdir_slice_txt

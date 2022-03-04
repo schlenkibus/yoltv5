@@ -12,8 +12,8 @@ object_names:
 
 ###################
 # image slicing variables
-data_root: /data/test_imagery
-test_im_dir: /data/test_imagery/input
+data_root: ''
+test_im_dir: ''
 sliceHeight: 640
 sliceWidth: 640
 train_im_size: 640
@@ -26,10 +26,10 @@ slice_verbose: False
 n_threads_slice: 8
 slice_sep: '__'
 slice_overwrite: True
-outdir_slice_root: /data/test_imagery/yoltv5
-outdir_slice_ims: /data/test_imagery/images_slice
-outdir_slice_txt: /data/test_imagery/txt
-outpath_test_txt: /data/test_imagery/test.txt
+outdir_slice_root: ''
+outdir_slice_ims: ''
+outdir_slice_txt: ''
+outpath_test_txt: ''
 max_edge_aspect_ratio: 4
 
 ###################
