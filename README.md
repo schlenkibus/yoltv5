@@ -59,3 +59,5 @@ Simply edit [yoltv5_test_vehicles_8cat.yaml](https://github.com/avanetten/yoltv5
 Outputs will look something like the figure below (cars=green, trucks=red, buses=blue):
 
 ![Alt text](/results/__examples/khartoum_example0.jpg?raw=true "")
+
+python inference-on-model.py -i /data/test-tif/Max_20200722_Trans_transparent_mosaic_group1.tif -o /out/zitest -y /configs/yoltv5_test_flowers_base_tif.yaml -m /data/BEST-YOLT.pt

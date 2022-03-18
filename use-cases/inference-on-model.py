@@ -111,15 +111,16 @@ def main(argv):
             print(f"Saved config yaml to {inference_yaml}.")
 
     except yaml.YAMLError as exception:
-        print("96" + exception)
+        print(exception)
         sys.exit(4)
 
     print("Running inference!")
     #continue to start the approrpiate script from yoltv5 with the generated yaml file
-    app = subprocess.run(["python", "/yoltv5/test.py", inference_yaml], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    print("out:" + str(app.stdout))
-    print("err:" + str(app.stderr))
-    print("Done running inference!")
+    ret = os.system(f"python /yoltv5/test.py {inference_yaml}")
+    #app = subprocess.run(["python", "/yoltv5/test.py", inference_yaml], shell=True)
+    #print("out:" + str(app.stdout))
+    #print("err:" + str(app.stderr))
+    print(f"Done running inference! Exit Code: {ret}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])

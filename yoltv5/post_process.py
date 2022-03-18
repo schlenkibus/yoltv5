@@ -1608,7 +1608,7 @@ def execute(pred_dir='/root/yoltv5/results/',
                     
         # plot
         if i < n_plots:
-            print("Making output plot...")
+            print(f"Making output plot... from {im_path}")
             im_cv2 = cv2.imread(im_path)
             # im_skimage = skimage.io.imread(im_path)
             # im_cv2 = cv2.cvtColor(im_skimage, cv2.COLOR_RGB2BGR)

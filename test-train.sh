@@ -1,0 +1,1 @@
+nvidia-docker run --ipc=host --gpus=all -p 5000:5000 -v /tmp/out-training:/out -v /home/justus/development/yoltv5/data:/data yoltv5-rtx30xx python /use-cases/train-transfer-model.py -o /out/train -y /configs/yoltv5_train_flowers_base.yaml -m /data/BEST-YOLT.pt

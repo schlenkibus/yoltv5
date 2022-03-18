@@ -16,7 +16,7 @@ import skimage.io
 import prep_train
 
 ###############################################################################
-def slice_im_plus_boxes(image_path, out_name, out_dir_images, 
+def slice_im_plus_boxes(image, out_name, out_dir_images, 
              boxes=[], yolo_classes=[], out_dir_labels=None, 
              mask_path=None, out_dir_masks=None,
              sliceHeight=416, sliceWidth=416,
@@ -32,8 +32,8 @@ def slice_im_plus_boxes(image_path, out_name, out_dir_images,
 
     Arguments
     ---------
-    image_path : str
-        Location of image to slice
+    image : skimage
+        Image to slice
     out_name : str
         Root name of output files (coordinates will be appended to this)
     out_dir_images : str
@@ -70,12 +70,13 @@ def slice_im_plus_boxes(image_path, out_name, out_dir_images,
     """
 
     if len(out_ext) == 0:
-        im_ext = '.' + image_path.split('.')[-1]
+        im_ext = ".jpg"
     else:
         im_ext = out_ext
 
     t0 = time.time()
-    image = skimage.io.imread(image_path)  #, as_grey=False).astype(np.uint8)  # [::-1]
+    #print(f"loading im {image_path}")
+    #image = skimage.io.imread(image_path)  #, as_grey=False).astype(np.uint8)  # [::-1]
     print("image.shape:", image.shape)
     if mask_path:
         mask = skimage.io.imread(mask_path)
@@ -87,12 +88,11 @@ def slice_im_plus_boxes(image_path, out_name, out_dir_images,
     n_ims = 0
     for y0 in range(0, image.shape[0], dy):
         for x0 in range(0, image.shape[1], dx):
+            print(f"loop: {x0}/{y0}")
             out_boxes_yolo = []
             out_classes_yolo = []
             n_ims += 1
-
-            if (n_ims % 100) == 0:
-                print(n_ims)
+            print(n_ims)
 
             # make sure we don't have a tiny image on the edge
             if y0+sliceHeight > image.shape[0]:
@@ -186,7 +186,7 @@ def slice_im_plus_boxes(image_path, out_name, out_dir_images,
                                                                                                  
     print("Num slices:", n_ims,
           "sliceHeight", sliceHeight, "sliceWidth", sliceWidth)
-    print("Time to slice", image_path, time.time()-t0, "seconds")
+    print("Time to slice ", time.time()-t0, "seconds")
     return
     
     

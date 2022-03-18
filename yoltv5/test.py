@@ -91,6 +91,7 @@ if config.sliceWidth > 0:
     # # make list of test files
     print("\nslicing im_dir:", config.test_im_dir)
     im_list = [z for z in os.listdir(config.test_im_dir) if z.endswith(config.im_ext)]
+    print(im_list)
     if not os.path.exists(config.outdir_slice_ims):
         os.makedirs(config.outdir_slice_ims) #, exist_ok=True)
         os.makedirs(config.outdir_slice_txt) #, exist_ok=True)
@@ -98,19 +99,22 @@ if config.sliceWidth > 0:
         # slice images
         for i,im_name in enumerate(im_list):
             im_path = os.path.join(config.test_im_dir, im_name)
+            print(f"reading image {im_path}")
             im_tmp = skimage.io.imread(im_path)
             h, w = im_tmp.shape[:2]
-            #print(i, "/", len(im_list), im_name, "h, w =", h, w)
+            print(i, "/", len(im_list), im_name, "h, w =", h, w)
 
             # tile data
             out_name = im_name.split('.')[0]
+            print("before tile_ims_labels")
             tile_ims_labels.slice_im_plus_boxes(
-                im_path, out_name, config.outdir_slice_ims,
+                im_tmp, out_name, config.outdir_slice_ims,
                 sliceHeight=config.sliceHeight, sliceWidth=config.sliceWidth,
                 overlap=config.slice_overlap, slice_sep=config.slice_sep,
                 skip_highly_overlapped_tiles=config.skip_highly_overlapped_tiles,
                 overwrite=config.slice_overwrite,
-                out_ext=config.out_ext, verbose=config.slice_verbose)
+                out_ext=config.out_ext, verbose=True)
+            print("after tile_ims_labels")
         im_list_test = []
         for f in sorted([z for z in os.listdir(config.outdir_slice_ims) if z.endswith(config.out_ext)]):
             im_list_test.append(os.path.join(config.outdir_slice_ims, f))
@@ -203,7 +207,9 @@ for detection_thresh in config.detection_threshes:
         n_plots=config.n_plots,
         edge_buffer_test=config.edge_buffer_test,
         max_bbox_size_pix=config.max_bbox_size,
-        detection_thresh=detection_thresh)
+        detection_thresh=detection_thresh,
+        verbose=True,
+        super_verbose=True)
 
 
 tf = time.time()
