@@ -90,7 +90,7 @@ def plot_detections(im, boxes, gt_bounds=[],
                gt_color = (0, 255, 255),
                plot_line_thickness=2, show_labels=True,
                label_alpha_scale=0.85, compression_level=9,
-               alpha_scaling=True, show_plots=False, skip_empty=False,
+               alpha_scaling=False, show_plots=False, skip_empty=False,
                test_box_rescale_frac=1,
                label_txt=None,
                draw_rect=True, draw_circle=False,
@@ -1458,11 +1458,14 @@ def execute(pred_dir='/root/yoltv5/results/',
     if verbose:
         print("df_refine.columns:", df_refine.columns)                                   
         print("df_refine.head:", df_refine.head())                                   
-        print("df_refine.iloc[0]:", df_refine.iloc[0])                                   
+        print("saving refined df")
 
     # save refined df
     df_refine.to_csv(outpath_refined_df)
     
+    if verbose:
+        print("saved refined df")
+
     # create color_dict
     color_dict = {}
     for i,c in enumerate(sorted(np.unique(df_refine['category'].values))):
@@ -1484,6 +1487,7 @@ def execute(pred_dir='/root/yoltv5/results/',
         if verbose:
             print(i, "/", len(im_names_tiled), im_name)
         im_path = os.path.join(raw_im_dir, im_name + im_ext )
+        print(im_path)
         # get crs
         crs = rio.open(im_path).crs
         crs_str = str(crs).replace('.', '_')
@@ -1496,6 +1500,7 @@ def execute(pred_dir='/root/yoltv5/results/',
 
         # if no detections, write empty files
         if im_name not in im_names_set:
+            print(f"im_name {im_name} not in im_names_set")
             boxes, probs, classes, box_names = [], [], [], []
             # write empty geojsons (below doesn't work well for eval!)
             # open(outfile_geojson_geo, 'a').close()
@@ -1511,6 +1516,7 @@ def execute(pred_dir='/root/yoltv5/results/',
             
         # else, get all boxes for this image, create a list of box names too
         else:
+            print(f"im_name: {im_name}")
             df_filt = df_refine[df_refine['im_name_root'] == im_name]
             boxes = df_filt[['Xmin_Glob', 'Ymin_Glob', 'Xmax_Glob', 'Ymax_Glob']].values
             probs = df_filt['prob']
@@ -1547,33 +1553,6 @@ def execute(pred_dir='/root/yoltv5/results/',
             gdf_geo['y0_pix'] = df_filt['Ymin_Glob'].values
             gdf_geo['y1_pix'] = df_filt['Ymax_Glob'].values
             gdf_geo.to_file(outfile_geojson_geo_orig_crs, driver='GeoJSON')
-            # convert geojson to 'EPSG:3857'
-            # https://geopandas.org/en/stable/docs/user_guide/projections.html
-            # gdf_geo_3857 = gdf_geo.to_crs('EPSG:3857')
-            # gdf_geo_3857.to_file(outfile_geojson_geo_3857, driver='GeoJSON')
-
-        # # wmp too... poop
-        # use convert_poly_coords - need affine trannsorm to: outProj_str='EPSG:3857'
-        
-        # or use old code...
-        # df, json = add_geo_coords_to_df(df_, create_geojson=True,
-        #                      inProj_str='EPSG:4326', outProj_str='EPSG:3857',
-        #                      verbose=True)
-        #
-        # # x-y bounding box is a (minx, miny, maxx, maxy) tuple.
-     #    lon0, lat0, lon1, lat1 = poly_geo.bounds
-     #    #wkt_latlon = poly_geo.wkt
-     #    if verbose:
-     #        print("  lon0, lat0, lon1, lat1:", lon0, lat0, lon1, lat1)
-     #
-     #    # convert to other coords?:
-     #    #  https://gis.stackexchange.com/questions/78838/converting-projected-coordinates-to-lat-lon-using-python
-     #    #  https://openmaptiles.com/coordinate-systems/
-     #    #  https://ocefpaf.github.io/python4oceanographers/blog/2013/12/16/utm/
-     #    #    Web Mercator projection (EPSG:3857)
-     #    # convert to wmp
-     #    x0_wmp, y0_wmp = pyproj.transform(inProj, outProj, lon0, lat0)
-     #    x1_wmp, y1_wmp = pyproj.transform(inProj, outProj, lon1, lat1)
         
         # get gt boundaries, if desired
         bounds_gt = []
@@ -1584,34 +1563,19 @@ def execute(pred_dir='/root/yoltv5/results/',
             for idx_tmp, row_tmp in gt_gdf.iterrows():
                 gt_cat = row_tmp[gt_cat_attrib]
                 gt_geom_pix = row_tmp['geometry']
-                # gt_geom_geo = row_tmp['geometry']
-                # # get pix coords
-                # gt_geom_pix = convert_poly_coords(gt_geom_geo, raster_src=ps_rgb_path,
-                #                                     affine_obj=None, inverse=True,
-                #                                     precision=2)
-                # Returns a (minx, miny, maxx, maxy) tuple (float values) that bounds the object.
                 gt_bounds = gt_geom_pix.bounds
                 [miny, minx, maxy, maxx] = list(gt_bounds)
                 bounds_gt.append([gt_cat,[minx, miny, maxx, maxy]])
 
-        # # score
-        # if os.path.exists(truth_file):
-        #     f1 = score_one(truth_file, outfile_geojson)
-        #     label_txt = 'f1=%.2f' % f1
-        #     print("  f1 = ", f1)
-        #     score_agg_native.append(f1)
-        #     if f1 < 0.1:
-        #         plot_this_one = True
-        # else:
-        #     label_txt = ''
         label_txt = ''
                     
         # plot
         if i < n_plots:
-            print(f"Making output plot... from {im_path}")
-            im_cv2 = cv2.imread(im_path)
-            # im_skimage = skimage.io.imread(im_path)
-            # im_cv2 = cv2.cvtColor(im_skimage, cv2.COLOR_RGB2BGR)
+            print(f"Making output plot... from {im_path} n boxes: {len(boxes)}")
+            #im_cv2 = cv2.imread(im_path)
+            im_skimage = skimage.io.imread(im_path)
+            im_cv2 = cv2.cvtColor(im_skimage, cv2.COLOR_RGB2BGR)
+            #im_skimage = None
             plot_detections(im_cv2, boxes, 
                    gt_bounds=bounds_gt,
                    scores=probs, 
@@ -1619,7 +1583,7 @@ def execute(pred_dir='/root/yoltv5/results/',
                    plot_thresh=detection_thresh, 
                    classes=classes, 
                    color_dict=color_dict,
-                   plot_line_thickness=2, 
+                   plot_line_thickness=1, 
                    show_labels=show_labels,
                    alpha_scaling=False, label_alpha_scale=0.85, 
                    compression_level=8,
@@ -1628,6 +1592,7 @@ def execute(pred_dir='/root/yoltv5/results/',
                    draw_circle=False, draw_rect=True,
                    label_txt=label_txt,
                    verbose=super_verbose, super_verbose=False)
+            im_cv2 = None
                    
         # extract image chips
         if len(out_dir_chips) > 0:

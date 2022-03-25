@@ -115,6 +115,8 @@ if config.sliceWidth > 0:
                 overwrite=config.slice_overwrite,
                 out_ext=config.out_ext, verbose=True)
             print("after tile_ims_labels")
+            im_tmp = None
+
         im_list_test = []
         for f in sorted([z for z in os.listdir(config.outdir_slice_ims) if z.endswith(config.out_ext)]):
             im_list_test.append(os.path.join(config.outdir_slice_ims, f))

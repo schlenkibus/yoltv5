@@ -40,3 +40,6 @@ def main(argv):
     print("out:" + str(app.stdout))
     print("err:" + str(app.stderr))
     print("Done running inference!")
+
+if __name__ == "__main__":
+    main()

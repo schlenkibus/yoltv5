@@ -65,7 +65,12 @@ def main(argv):
         print(f"Yaml File: {base_yaml} does not exists")
         sys.exit(3)
 
-    if not os.path.exists(inputfile):
+    isdirectory = False
+
+    if os.path.isdir(inputfile):
+        isdirectory = True
+
+    if not os.path.exists(inputfile) and not isdirectory:
         print(f"Inputfile: {inputfile} does not exists")
         sys.exit(3)
 
@@ -87,8 +92,11 @@ def main(argv):
     os.makedirs(outdir_slice_root, exist_ok=True)
     os.makedirs(pred_out_dir, exist_ok=True)
 
-    #copy input file to slice input
-    shutil.copy2(inputfile, test_im_dir)
+    #copy input file or files to slice input
+    if isdirectory:
+        copy_tree(inputfile, test_im_dir)
+    else:
+        shutil.copy2(inputfile, test_im_dir)
 
     #read base yaml
     try:

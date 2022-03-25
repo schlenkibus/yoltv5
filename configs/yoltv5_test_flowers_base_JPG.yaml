@@ -14,18 +14,18 @@ object_names:
 # image slicing variables
 data_root: ''
 test_im_dir: ''
-sliceHeight: 640
-sliceWidth: 640
+sliceHeight: 544
+sliceWidth: 544
 train_im_size: 640
 slice_overlap: 0.1
-im_ext: '.tif'
-out_ext: '.tif'
+im_ext: '.JPG'
+out_ext: '.jpg'
 # shouldn't need changed below here
 skip_highly_overlapped_tiles: False
 slice_verbose: False
 n_threads_slice: 8
 slice_sep: '__'
-slice_overwrite: False
+slice_overwrite: True
 outdir_slice_root: ''
 outdir_slice_ims: ''
 outdir_slice_txt: ''
@@ -40,14 +40,14 @@ weights_file: /out/BEST-YOLT.pt
 ###################
 # post-process variables
 detection_threshes:
-- 0.1
-n_plots: 4
+- 0.2
+n_plots: 8
 allow_nested_detections: True
 truth_file: '' # os.path.join(data_root, 'test', 'geojsons_geo', 'truth.geojson')
 # seldom changed below here
-extract_chips: False
+extract_chips: True
 chip_rescale_frac: 1.1
-chip_ext: '.tif'
-edge_buffer_test: 0
+chip_ext: '.jpg'
+edge_buffer_test: 1
 max_bbox_size: 100
 nms_overlap_thresh: 0.5
