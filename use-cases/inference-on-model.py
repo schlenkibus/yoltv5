@@ -17,7 +17,7 @@ def touch(fname):
         open(fname, 'a').close()
 
 def main(argv):
-    inputfile = ''
+    inDirectory = ''
     outputdir = ''
     modelfile = ''
     base_yaml = ''
@@ -33,7 +33,7 @@ def main(argv):
             print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model>")
             sys.exit()
         elif opt in ("-i", "--input"):
-            inputfile = arg
+            inDirectory = arg
         elif opt in ("-o", "--output"):
             outputdir = arg
         elif opt in ("-m", "--model"):
@@ -41,7 +41,7 @@ def main(argv):
         elif opt in ("-y", "--baseyaml"):
             base_yaml = arg
 
-    print(f"Input file is {inputfile}")
+    print(f"Input file/dir is {inDirectory}")
     print(f"Model file is {modelfile}")
     print(f"Output directory is {outputdir}")
     print(f"Baseyaml file is {base_yaml}")
@@ -66,12 +66,26 @@ def main(argv):
         sys.exit(3)
 
     isdirectory = False
+    fileType = None
 
-    if os.path.isdir(inputfile):
+    if os.path.isdir(inDirectory):
         isdirectory = True
+        #check if all files have the same extension
+        fileTypes = set()
+        for root, dirs, files in os.walk(inDirectory):
+            for file in files:
+                fileTypes.add(file.split(".")[-1])
 
-    if not os.path.exists(inputfile) and not isdirectory:
-        print(f"Inputfile: {inputfile} does not exists")
+        if len(fileTypes) > 1:
+            raise Exception("Directory contains files of different types")
+
+        if len(fileTypes) == 0:
+            raise Exception("Directory contains no files")
+
+        fileType = fileTypes.pop()
+
+    if not os.path.exists(inDirectory) and not isdirectory:
+        print(f"Inputfile: {inDirectory} does not exists")
         sys.exit(3)
 
     if os.path.exists(outdir_slice_ims):
@@ -94,9 +108,9 @@ def main(argv):
 
     #copy input file or files to slice input
     if isdirectory:
-        copy_tree(inputfile, test_im_dir)
+        copy_tree(inDirectory, test_im_dir)
     else:
-        shutil.copy2(inputfile, test_im_dir)
+        shutil.copy2(inDirectory, test_im_dir)
 
     #read base yaml
     try:
@@ -112,6 +126,11 @@ def main(argv):
             data['weights_file'] = modelfile
             data['outname_infer'] = outname_infer
             data['yolov5_outdirectory'] = yolov5_outdirectory
+            if isdirectory:
+                fileType = f".{fileType}"
+                data['im_ext'] = fileType
+                data['out_ext'] = fileType
+                data['chip_ext'] = fileType
 
             with open(inference_yaml, 'w') as out_file:
                 #save yaml to output dir

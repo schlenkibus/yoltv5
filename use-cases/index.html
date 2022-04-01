@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Flower Detection Upload</title>
+        <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/base-min.css">
+    </head>
+    <body>
+        <h2>Queue Job to Predict Number of Flowers in this Photo:</h2>
+        <div id='upload-container'>
+            <form id = "upload-form" action = "/uploader" method="POST" enctype = "multipart/form-data">
+                <input type = "file" name = "file" />
+                <input type = "submit"/>
+            </form>
+        </div>
+    </body>
+</html>
