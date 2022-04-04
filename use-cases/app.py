@@ -102,16 +102,13 @@ def index():
 def upload():
     if request.method == 'POST':
         f = request.files['file']
-
-        if not f.filename.endswith(".zip"):
-            return "only zip files are allowed"
         
-        #prevent malicious zip files from being uploaded
-        if f.filename.split(".")[0].find("..") != -1:
-            return "zip files cannot contain .."
-
+        if not f.filename.endswith(".zip"):
+            return "only a zip file is allowed"
+        
         f.save(f.filename)
         res = app.app_ctx_globals_class.state.processUploadedDirectory(f.filename)
+
         if os.path.isfile(res):
             return send_file(res)
         else:
