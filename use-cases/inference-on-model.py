@@ -2,7 +2,7 @@
 
 #!/usr/bin/python
 
-import shutil
+import shutil, time
 import sys, getopt, yaml
 from time import time
 import os
@@ -142,12 +142,13 @@ def main(argv):
         sys.exit(4)
 
     print("Running inference!")
-    #continue to start the approrpiate script from yoltv5 with the generated yaml file
+    startTime = time()
+    #get current working directory
+    cwd = os.getcwd()
+    print(f"Current working directory is {cwd}")
     ret = os.system(f"python /yoltv5/test.py {inference_yaml}")
-    #app = subprocess.run(["python", "/yoltv5/test.py", inference_yaml], shell=True)
-    #print("out:" + str(app.stdout))
-    #print("err:" + str(app.stderr))
-    print(f"Done running inference! Exit Code: {ret}")
+    endTime = time()
+    print(f"Done running inference! Time taken: {endTime - startTime} seconds. Exit Code: {ret}")
 
 if __name__ == "__main__":
     main(sys.argv[1:])
