@@ -2,6 +2,7 @@
 
 #!/usr/bin/python
 
+from genericpath import exists
 import shutil, time
 import sys, getopt, yaml
 from time import time
@@ -146,7 +147,10 @@ def main(argv):
     #get current working directory
     cwd = os.getcwd()
     print(f"Current working directory is {cwd}")
-    ret = os.system(f"python /yoltv5/test.py {inference_yaml}")
+    if os.path.exists("/yoltv5/test.py"):
+        ret = os.system(f"python /yoltv5/test.py {inference_yaml}")
+    elif os.path.exists("{cwd}/yoltv5/test.py"):
+        ret = os.system(f"python {cwd}/yoltv5/test.py {inference_yaml}")
     endTime = time()
     print(f"Done running inference! Time taken: {endTime - startTime} seconds. Exit Code: {ret}")
 
