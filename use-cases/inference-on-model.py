@@ -22,12 +22,13 @@ def main(argv):
     outputdir = ''
     modelfile = ''
     base_yaml = ''
+    test_application_path = ''
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:m:y:",["input=","output=","model=","baseyaml="])
+        opts, args = getopt.getopt(argv,"hi:o:m:y:t:",["input=","output=","model=","baseyaml=,test_application_path="])
     except getopt.GetoptError:
-        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path>")
+        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path> -t <test_application_path>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -41,12 +42,14 @@ def main(argv):
             modelfile = arg
         elif opt in ("-y", "--baseyaml"):
             base_yaml = arg
+        elif opt in ("-t", "--test_application_path"):
+            test_application_path = arg
 
     print(f"Input file/dir is {inDirectory}")
     print(f"Model file is {modelfile}")
     print(f"Output directory is {outputdir}")
     print(f"Baseyaml file is {base_yaml}")
-
+    print(f"Test application path is {test_application_path}")
 
     timestamp = str(int(time()))
     data_root = outputdir
@@ -144,13 +147,7 @@ def main(argv):
 
     print("Running inference!")
     startTime = time()
-    #get current working directory
-    cwd = os.getcwd()
-    print(f"Current working directory is {cwd}")
-    if os.path.exists("/yoltv5/test.py"):
-        ret = os.system(f"python /yoltv5/test.py {inference_yaml}")
-    elif os.path.exists("{cwd}/yoltv5/test.py"):
-        ret = os.system(f"python {cwd}/yoltv5/test.py {inference_yaml}")
+    ret = os.system(f"python {test_application_path} {inference_yaml}")
     endTime = time()
     print(f"Done running inference! Time taken: {endTime - startTime} seconds. Exit Code: {ret}")
 
