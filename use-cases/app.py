@@ -35,7 +35,7 @@ class ApplicationState:
             zip_ref.extractall(tmpDir)
 
         self.inInterference = True
-        ret = os.system(f"python3 /use-cases/inference-on-model.py -i {tmpDir} -o {self.resultPath} -m {self.modelPath} -y /configs/yoltv5_test_flowers_base.yaml")
+        ret = os.system(f"python3 /use-cases/inference-on-model.py -i {tmpDir} -o {self.resultPath} -m {self.modelPath} -b /configs/yoltv5_test_flowers_base.yaml -y /")
 
         #delete tmp directory
         import shutil

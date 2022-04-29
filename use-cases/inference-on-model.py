@@ -23,12 +23,13 @@ def main(argv):
     modelfile = ''
     base_yaml = ''
     test_application_path = ''
+    base_yolt_path = ''
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:m:y:t:",["input=","output=","model=","baseyaml=,test_application_path="])
+        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:",["input=","output=","model=","baseyaml=,test_application_path=","yolt_path="])
     except getopt.GetoptError:
-        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path> -t <test_application_path>")
+        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path> -t <test_application_path> -y <yolt_path>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -40,10 +41,12 @@ def main(argv):
             outputdir = arg
         elif opt in ("-m", "--model"):
             modelfile = arg
-        elif opt in ("-y", "--baseyaml"):
+        elif opt in ("-b", "--baseyaml"):
             base_yaml = arg
         elif opt in ("-t", "--test_application_path"):
             test_application_path = arg
+        elif opt in ("-y", "--yolt_path"):
+            base_yolt_path = arg
 
     print(f"Input file/dir is {inDirectory}")
     print(f"Model file is {modelfile}")
@@ -130,6 +133,7 @@ def main(argv):
             data['weights_file'] = modelfile
             data['outname_infer'] = outname_infer
             data['yolov5_outdirectory'] = yolov5_outdirectory
+            data['yoltv5_path'] = base_yolt_path
             if isdirectory:
                 fileType = f".{fileType}"
                 data['im_ext'] = fileType

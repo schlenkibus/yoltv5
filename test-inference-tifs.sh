@@ -1,1 +1,1 @@
-nvidia-docker run --ipc=host --gpus=all -p 5000:5000 -v /tmp/out:/out -v /home/justus/development/yoltv5/data:/data yoltv5-rtx30xx python /use-cases/inference-on-model.py -i /data/test_tifs -o /out/zitest -y /configs/yoltv5_test_flowers_base_tif.yaml -m /data/BEST-YOLT.pt
+nvidia-docker run --ipc=host --gpus=all -p 5000:5000 -v /tmp/out:/out -v /home/justus/development/yoltv5/data:/data yoltv5-rtx30xx python /use-cases/inference-on-model.py -i /data/test_tifs -o /out/zitest -b /configs/yoltv5_test_flowers_base_tif.yaml -m /data/BEST-YOLT.pt -y /
