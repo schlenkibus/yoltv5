@@ -45,7 +45,7 @@ n_plots: 8
 allow_nested_detections: True
 truth_file: '' # os.path.join(data_root, 'test', 'geojsons_geo', 'truth.geojson')
 # seldom changed below here
-extract_chips: True
+extract_chips: False
 chip_rescale_frac: 1.1
 chip_ext: '.jpg'
 edge_buffer_test: 1

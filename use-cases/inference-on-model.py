@@ -90,10 +90,14 @@ def main(argv):
             raise Exception("Directory contains no files")
 
         fileType = fileTypes.pop()
+    
 
     if not os.path.exists(inDirectory) and not isdirectory:
         print(f"Inputfile: {inDirectory} does not exists")
         sys.exit(3)
+
+    if not isdirectory:
+        fileType = inDirectory.split(".")[-1]
 
     if os.path.exists(outdir_slice_ims):
         print(f"Slice_directory: {outdir_slice_ims} exists")
@@ -134,7 +138,8 @@ def main(argv):
             data['outname_infer'] = outname_infer
             data['yolov5_outdirectory'] = yolov5_outdirectory
             data['yoltv5_path'] = base_yolt_path
-            if isdirectory:
+
+            if isdirectory or fileType != None:
                 fileType = f".{fileType}"
                 data['im_ext'] = fileType
                 data['out_ext'] = fileType
