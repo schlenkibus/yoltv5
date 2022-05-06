@@ -14,8 +14,8 @@ object_names:
 # image slicing variables
 data_root: ''
 test_im_dir: ''
-sliceHeight: 544
-sliceWidth: 544
+sliceHeight: 640
+sliceWidth: 640
 train_im_size: 640
 slice_overlap: 0.1
 im_ext: '.jpg'
