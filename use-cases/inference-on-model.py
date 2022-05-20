@@ -27,9 +27,9 @@ def main(argv):
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:",["input=","output=","model=","baseyaml=,test_application_path=","yolt_path="])
+        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:",["input=","output=","model=","baseyaml=","test_application_path=","yolt_path="])
     except getopt.GetoptError:
-        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -y <base_yaml_path> -t <test_application_path> -y <yolt_path>")
+        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -b <base_yaml_path> -t <test_application_path> -y <yolt_path>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
@@ -151,7 +151,7 @@ def main(argv):
             print(f"Saved config yaml to {inference_yaml}.")
 
     except yaml.YAMLError as exception:
-        print(exception)
+        print("interference-on-model.py:154 " + exception)
         sys.exit(4)
 
     print("Running inference!")
