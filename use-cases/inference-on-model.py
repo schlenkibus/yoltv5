@@ -151,7 +151,7 @@ def main(argv):
             print(f"Saved config yaml to {inference_yaml}.")
 
     except yaml.YAMLError as exception:
-        print(exception)
+        print("interference-on-model.py:154 " + exception)
         sys.exit(4)
 
     print("Running inference!")

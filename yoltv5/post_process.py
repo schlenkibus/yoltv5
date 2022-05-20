@@ -87,7 +87,7 @@ def poly_from_bbox(bbox):
 def plot_detections(im, boxes, gt_bounds=[],
                scores=[], classes=[], outfile='', plot_thresh=0.3,
                color_dict={},
-               gt_color = (0, 255, 255),
+               gt_color = (255, 0, 0),
                plot_line_thickness=2, show_labels=True,
                label_alpha_scale=0.85, compression_level=9,
                alpha_scaling=False, show_plots=False, skip_empty=False,
@@ -1589,7 +1589,7 @@ def execute(pred_dir='/root/yoltv5/results/',
                    compression_level=8,
                    show_plots=False, skip_empty=False,
                    test_box_rescale_frac=1,
-                   draw_circle=False, draw_rect=True,
+                   draw_circle=True, draw_rect=False,
                    label_txt=label_txt,
                    verbose=super_verbose, super_verbose=False)
             im_cv2 = None

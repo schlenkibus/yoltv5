@@ -97,10 +97,16 @@ app = Flask(__name__)
 def index():
     return send_file('/use-cases/index.html')
 
+@app.route('/ls/<id>')
+def ls(id):
+    path = f"/out/results/{id}/inference.yaml"
+    return send_file(path)
+
 #upload route
 @app.route('/uploader', methods=['POST'])
 def upload():
     if request.method == 'POST':
+        app.logger.info(f"upload: {request.form}")
         f = request.files['file']
         
         if not f.filename.endswith(".zip"):
