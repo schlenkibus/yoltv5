@@ -4,6 +4,8 @@ import sys
 import getopt
 import uuid
 import os
+import shutil
+import zipfile
 
 class ApplicationState:
     def __init__(self, workDirPath, modelPath, resultPath):
@@ -21,24 +23,35 @@ class ApplicationState:
         if not os.path.isdir(self.resultPath):
             os.makedirs(self.resultPath)
 
-    def processUploadedDirectory(self, zipFile):
-        print(f"processUploadedDirectory: {zipFile}")
+    def processUploadedFileOrZip(self, zipFileOrFile, generatePlots, loggerFN):
+        loggerFN(f"processUploadedFileOrZip: {zipFileOrFile}")
+
+        if zipFileOrFile.endswith(".zip"):
+            loggerFN("Zip file")
+            zipFile = zipFileOrFile
+        else:
+            imageFile = zipFileOrFile
+            zipFile = None
 
         if self.inInterference:
             return "process running already"
 
         #create tmp directory to unzip to
         tmpDir = f"{self.workDirPath}/{str(uuid.uuid4())}"
+        os.makedirs(tmpDir)
+        loggerFN(f"tmpDir: {tmpDir} exits: {os.path.isdir(tmpDir)}")
 
-        import zipfile
-        with zipfile.ZipFile(zipFile, 'r') as zip_ref:
-            zip_ref.extractall(tmpDir)
+        if zipFile is not None:
+            with zipfile.ZipFile(zipFile, 'r') as zip_ref:
+                zip_ref.extractall(tmpDir)
+        else:
+            shutil.copy(imageFile, tmpDir)
+
 
         self.inInterference = True
         ret = os.system(f"python3 /use-cases/inference-on-model.py -i {tmpDir} -o {self.resultPath} -m {self.modelPath} -b /configs/yoltv5_test_flowers_base.yaml -y / -t /yoltv5/test.py")
 
         #delete tmp directory
-        import shutil
         shutil.rmtree(tmpDir)
 
         timestamp = 0
@@ -52,15 +65,25 @@ class ApplicationState:
         #path to geojson directory: resultPath/yolov5detection/results/<timestamp>/geojsons_geo_0p2
         #create zip with geo-jsons
         geoJsonPath = f"{resultPath}/yolov5-detection/results/{timestamp}/geojsons_geo_0p2"
-        outZipPath = f"{self.resultPath}/geo-jsons-{timestamp}.zip"
+        plotsPath = f"{resultPath}/yolov5-detection/results/{timestamp}/pred_plots_0p2"
+        plotInfix = ""
+        if generatePlots:
+            plotInfix = "and-plots-"
+        outZipPath = f"{self.resultPath}/geojsons-{plotInfix}{zipFileOrFile}-{timestamp}.zip"
         print(geoJsonPath)
         with zipfile.ZipFile(outZipPath, 'w') as zip_ref:
             for root, dirs, files in os.walk(geoJsonPath):
                 for file in files:
                     print(f"root: {root}, file: {file}")
-                    zip_ref.write(f"{root}/{file}")
+                    zip_ref.write(f"{root}/{file}", f"json/{file}")
+            
+            if generatePlots:
+                for root, dirs, files in os.walk(plotsPath):
+                    for file in files:
+                        print(f"root: {root}, file: {file}")
+                        zip_ref.write(f"{root}/{file}", f"plots/{file}")
 
-        #check if geojson zip was written
+        #check if zip was written
         if not os.path.isfile(outZipPath):
             return "could not create zip file at " + outZipPath
 
@@ -107,13 +130,13 @@ def ls(id):
 def upload():
     if request.method == 'POST':
         app.logger.info(f"upload: {request.form}")
+
+        generatePlots = request.form.get('download_plots') == "download_plots"
+
         f = request.files['file']
         
-        if not f.filename.endswith(".zip"):
-            return "only a zip file is allowed"
-        
         f.save(f.filename)
-        res = app.app_ctx_globals_class.state.processUploadedDirectory(f.filename)
+        res = app.app_ctx_globals_class.state.processUploadedFileOrZip(f.filename, generatePlots, lambda x: app.logger.info(f"LOG: {x}"))
 
         if os.path.isfile(res):
             return send_file(res)

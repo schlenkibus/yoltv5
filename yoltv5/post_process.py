@@ -234,14 +234,13 @@ def plot_detections(im, boxes, gt_bounds=[],
                         str(int(100*float(score))) + '%'
                     color = color_dict[classy]
 
-                    if super_verbose:
-                        #print ("  box:", box)
-                        print("  left, right, top, bottom:",
-                              left, right, top, bottom)
-                        print("   classs:", classy)
-                        print("   score:", score)
-                        print("   classy_str:", classy_str)
-                        print("   color:", color)
+                    #print ("  box:", box)
+                    print("  left, right, top, bottom:",
+                            left, right, top, bottom)
+                    print("   classs:", classy)
+                    print("   score:", score)
+                    print("   classy_str:", classy_str)
+                    print("   color:", color)
 
                     # add rectangle to overlay
                     if draw_rect:
@@ -406,7 +405,12 @@ def plot_detections(im, boxes, gt_bounds=[],
                                 font, font_size, (0, 0, 0), font_width,
                                 # cv2.CV_AA)
                                 cv2.LINE_AA)
-                                
+
+    
+
+    #get upper right corner of output
+    cv2.putText(output, str(nboxes), (w - 100, 30), font, font_size, (0, 0, 0), font_width, cv2.LINE_AA)
+
     # plot gt if desired                           
     if len(gt_bounds) > 0:
         # print("plotting gt bounds:",)
@@ -1344,8 +1348,10 @@ def execute(pred_dir='/root/yoltv5/results/',
     t0 = time.time()
     
     # a few random variabls that should not need altered
-    colors = 40*[(255, 0, 0), (0, 255, 0), (0, 0, 255), (0, 140, 255),
+    colors = 40*[(0, 0, 255), (0, 255, 0), (255, 0, 0), (0, 140, 255),
               (0, 255, 125), (125, 125, 125)]
+
+    print(colors)
 
     # Outputs
     outpath_refined_df = os.path.join(out_dir_root, out_csv)
@@ -1583,7 +1589,7 @@ def execute(pred_dir='/root/yoltv5/results/',
                    plot_thresh=detection_thresh, 
                    classes=classes, 
                    color_dict=color_dict,
-                   plot_line_thickness=1, 
+                   plot_line_thickness=2, 
                    show_labels=show_labels,
                    alpha_scaling=False, label_alpha_scale=0.85, 
                    compression_level=8,
