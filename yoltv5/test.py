@@ -39,16 +39,12 @@ with open(args.config_path, 'r') as f:
     config_dict = yaml.safe_load(f)
     f.close()
 config = dotdict(config_dict)
-print("test.py: config:")
-print(config)
-
 
 ######################################
 # 1. Import yoltv5 scripts
 ######################################
 
 yolt_src_path = os.path.join(config.yoltv5_path, 'yoltv5')
-print("yoltv5_execute_test.py: yolt_src_path:", yolt_src_path)
 sys.path.append(yolt_src_path)
 import prep_train
 import tile_ims_labels
@@ -89,32 +85,30 @@ print("cat_int_to_name_dict:", cat_int_to_name_dict)
 ###################
 if config.sliceWidth > 0:
     # # make list of test files
-    print("\nslicing im_dir:", config.test_im_dir)
+    #print("\nslicing im_dir:", config.test_im_dir)
     im_list = [z for z in os.listdir(config.test_im_dir) if z.endswith(config.im_ext)]
-    print(im_list)
+    #print(im_list)
     if not os.path.exists(config.outdir_slice_ims):
         os.makedirs(config.outdir_slice_ims) #, exist_ok=True)
         os.makedirs(config.outdir_slice_txt) #, exist_ok=True)
-        print("outdir_slice_ims:", config.outdir_slice_ims)
+        
         # slice images
         for i,im_name in enumerate(im_list):
             im_path = os.path.join(config.test_im_dir, im_name)
-            print(f"reading image {im_path}")
+            #print(f"reading image {im_path}")
             im_tmp = skimage.io.imread(im_path)
             h, w = im_tmp.shape[:2]
-            print(i, "/", len(im_list), im_name, "h, w =", h, w)
+            #print(i, "/", len(im_list), im_name, "h, w =", h, w)
 
             # tile data
             out_name = im_name.split('.')[0]
-            print("before tile_ims_labels")
             tile_ims_labels.slice_im_plus_boxes(
                 im_tmp, out_name, config.outdir_slice_ims,
                 sliceHeight=config.sliceHeight, sliceWidth=config.sliceWidth,
                 overlap=config.slice_overlap, slice_sep=config.slice_sep,
                 skip_highly_overlapped_tiles=config.skip_highly_overlapped_tiles,
                 overwrite=config.slice_overwrite,
-                out_ext=config.out_ext, verbose=True)
-            print("after tile_ims_labels")
+                out_ext=config.out_ext, verbose=False)
             im_tmp = None
 
         im_list_test = []
