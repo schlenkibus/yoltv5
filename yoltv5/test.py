@@ -136,7 +136,7 @@ with open(config.outpath_test_txt,'r') as f:
     all_lines = f.readlines()
     for i,l in enumerate(all_lines):
         if i < 5:
-            print(l)
+            print(l.strip())
         else:
             break
             
