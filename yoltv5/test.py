@@ -210,9 +210,8 @@ for detection_thresh in config.detection_threshes:
         edge_buffer_test=config.edge_buffer_test,
         max_bbox_size_pix=config.max_bbox_size,
         detection_thresh=detection_thresh,
-        verbose=True,
-        super_verbose=True)
-
+        verbose=False,
+        super_verbose=False)
 
 tf = time.time()
 print("\nResults saved to: {}".format(out_dir_root))

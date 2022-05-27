@@ -77,7 +77,6 @@ def slice_im_plus_boxes(image, out_name, out_dir_images,
     t0 = time.time()
     #print(f"loading im {image_path}")
     #image = skimage.io.imread(image_path)  #, as_grey=False).astype(np.uint8)  # [::-1]
-    print("image.shape:", image.shape)
     if mask_path:
         mask = skimage.io.imread(mask_path)
     win_h, win_w = image.shape[:2]
@@ -88,11 +87,9 @@ def slice_im_plus_boxes(image, out_name, out_dir_images,
     n_ims = 0
     for y0 in range(0, image.shape[0], dy):
         for x0 in range(0, image.shape[1], dx):
-            print(f"loop: {x0}/{y0}")
             out_boxes_yolo = []
             out_classes_yolo = []
             n_ims += 1
-            print(n_ims)
 
             # make sure we don't have a tiny image on the edge
             if y0+sliceHeight > image.shape[0]:
@@ -136,12 +133,12 @@ def slice_im_plus_boxes(image, out_name, out_dir_images,
                         # get box coordinates within window
                         out_box_tmp = [xb0 - xmin, xb1 - xmin,
                                        yb0 - ymin, yb1 - ymin]
-                        print("  out_box_tmp:", out_box_tmp)
+                        #print("  out_box_tmp:", out_box_tmp)
                         # out_boxes.append(out_box_tmp)
                         # convert to yolo coords (x,y,w,h)
                         yolo_coords = prep_train.convert((sliceWidth, sliceHeight),
                                                out_box_tmp)
-                        print("    yolo_coords:", yolo_coords)
+                        #print("    yolo_coords:", yolo_coords)
                         out_boxes_yolo.append(yolo_coords)
                         out_classes_yolo.append(yolo_class)
             
