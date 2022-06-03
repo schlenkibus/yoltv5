@@ -408,8 +408,23 @@ def plot_detections(im, boxes, gt_bounds=[],
 
     
 
-    #get upper right corner of output
-    cv2.putText(output, str(nboxes), (w - 100, 30), font, font_size, (0, 0, 0), font_width, cv2.LINE_AA)
+    # create text for total number of detections with relative size and thickness
+    text_det = f"Detected flowers: {str(nboxes)}"
+    font_det = cv2.FONT_HERSHEY_DUPLEX
+    font_scale = 0.001
+    font_thickness_scale = 0.001
+    font_scale_det = round(min(w, h) * font_scale)
+    font_thickness_det = round(min(w, h) * font_thickness_scale)
+
+    # get boundary of text
+    textsize = cv2.getTextSize(text_det, font_det, font_scale_det, font_thickness_det)[0]
+
+    # get coords based on text boundary and set relative distance to margin
+    textX = (output.shape[1] - textsize[0]) - round(w * 0.004)
+    textY = (output.shape[0] + textsize[1]) - round(h * 0.03)
+
+    # add text in lower right corner of the prediction plot
+    cv2.putText(output, text_det, (textX, textY), font_det, font_scale_det, (255, 255, 255), font_thickness_det)
 
     # plot gt if desired                           
     if len(gt_bounds) > 0:
