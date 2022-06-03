@@ -75,10 +75,22 @@ def main(argv):
     isdirectory = False
     fileType = None
 
+    jpgTypes = ['jpg', 'jpeg', 'JPG', 'JPEG']
+    pngTypes = ['png', 'PNG']
+
     if os.path.isdir(inDirectory):
         isdirectory = True
         #check if all files have the same extension
         fileTypes = set()
+        
+        #rename all jpg variants to one literal extension
+        for file in os.listdir(inDirectory):
+            if file.endswith(tuple(jpgTypes)):
+                os.rename(f"{inDirectory}/{file}", f"{inDirectory}/{file.split('.')[0]}.jpg")
+            if file.endswith(tuple(pngTypes)):
+                os.rename(f"{inDirectory}/{file}", f"{inDirectory}/{file.split('.')[0]}.png")
+
+        #collect all file extensions
         for root, dirs, files in os.walk(inDirectory):
             for file in files:
                 fileTypes.add(file.split(".")[-1])
