@@ -24,16 +24,17 @@ def main(argv):
     base_yaml = ''
     test_application_path = ''
     base_yolt_path = ''
+    num_plots = 4
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:",["input=","output=","model=","baseyaml=","test_application_path=","yolt_path="])
+        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:p",["input=","output=","model=","baseyaml=","test_application_path=","yolt_path=","plots="])
     except getopt.GetoptError:
-        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -b <base_yaml_path> -t <test_application_path> -y <yolt_path>")
+        print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -b <base_yaml_path> -t <test_application_path> -y <yolt_path> -p <plots>")
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model>")
+            print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -b <base_yaml_path> -t <test_application_path> -y <yolt_path> -p <plot_all>")
             sys.exit()
         elif opt in ("-i", "--input"):
             inDirectory = arg
@@ -47,12 +48,15 @@ def main(argv):
             test_application_path = arg
         elif opt in ("-y", "--yolt_path"):
             base_yolt_path = arg
+        elif opt in ("-p", "--plots"):
+            num_plots = int(arg)
 
     print(f"Input file/dir is {inDirectory}")
     print(f"Model file is {modelfile}")
     print(f"Output directory is {outputdir}")
     print(f"Baseyaml file is {base_yaml}")
     print(f"Test application path is {test_application_path}")
+    print(f"Number of plots is {num_plots}")
 
     timestamp = str(int(time()))
     data_root = outputdir
@@ -150,6 +154,7 @@ def main(argv):
             data['outname_infer'] = outname_infer
             data['yolov5_outdirectory'] = yolov5_outdirectory
             data['yoltv5_path'] = base_yolt_path
+            data['n_plots'] = num_plots
 
             if isdirectory or fileType != None:
                 fileType = f".{fileType}"
