@@ -28,7 +28,7 @@ def main(argv):
 
     #parse arguments to this script
     try:
-        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:p",["input=","output=","model=","baseyaml=","test_application_path=","yolt_path=","plots="])
+        opts, args = getopt.getopt(argv,"hi:o:m:b:t:y:p:",["input=","output=","model=","baseyaml=","test_application_path=","yolt_path=","plots="])
     except getopt.GetoptError:
         print(f"inference-on-model.py -i <inputfile> -o <outputdir> -m <model> -b <base_yaml_path> -t <test_application_path> -y <yolt_path> -p <plots>")
         sys.exit(2)
